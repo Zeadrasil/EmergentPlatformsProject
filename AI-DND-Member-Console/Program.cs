@@ -1,4 +1,6 @@
-﻿namespace AI_DND_Member_Console
+﻿using System;
+
+namespace AI_DND_Member_Console
 {
     internal class Program
     {
