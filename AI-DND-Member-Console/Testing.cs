@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Security.Cryptography;
+using System.Text;
 using System.Threading.Tasks;
 using OllamaSharp;
 
@@ -59,6 +60,16 @@ namespace AI_DND_Member_Console
                 }
             }
             return false;
+        }
+
+        public static string GetResponse(string question)
+        {
+            StringBuilder sb = new StringBuilder();
+            foreach(var stream in client.GenerateAsync(question).ToBlockingEnumerable())
+            {
+                sb.Append(stream.Response);
+            }
+            return sb.ToString();
         }
     }
 }
