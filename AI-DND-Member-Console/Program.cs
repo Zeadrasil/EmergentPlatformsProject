@@ -11,6 +11,8 @@ namespace AI_DND_Member_Console
 		internal static StringBuilder messagesBuilder = new StringBuilder();
 		internal static LinkedList<string> messagesToSave = new LinkedList<string>();
 
+		internal static StringBuilder memoryBuilder = new StringBuilder();
+
 		internal static string SystemPromptAIDM = "You are the dungeon master for a game of D&D 5th edition. Act as the DM would, giving players the ability to act on their own while also enforcing the rules of the game. There is only one player in this session.";
 		internal static string SystemPromptAIPlayer = "You are a player in a game of D&D 5th edition. Act as a player would, rolling dice and roleplaying while trying to follow the rules to the best of your ability. You are the only player in this session.";
 		
@@ -42,10 +44,17 @@ namespace AI_DND_Member_Console
 			{
 				if(answer != null) messagesToSave.AddLast(answer);
 
-				foreach(var stream in Testing.client.GenerateAsync((answer == null) ? SystemPromptAIPlayer : answer).ToBlockingEnumerable()) {
+				foreach(string message in messagesToSave) {
+					memoryBuilder.Append(message);
+					memoryBuilder.Append('\n');
+				}
+
+				foreach(var stream in Testing.client.GenerateAsync((answer == null) ? SystemPromptAIPlayer : memoryBuilder.ToString()).ToBlockingEnumerable()) {
 					Console.Write(stream.Response);
 					messagesBuilder.Append(stream.Response);
 				}
+
+				memoryBuilder.Clear();
 
 				messagesToSave.AddLast(messagesBuilder.ToString());
 				messagesBuilder.Clear();
@@ -93,10 +102,17 @@ namespace AI_DND_Member_Console
 			{
 				if(answer != null) messagesToSave.AddLast(answer);
 
-				foreach(var stream in Testing.client.GenerateAsync((answer == null) ? SystemPromptAIDM : answer).ToBlockingEnumerable()) {
+				foreach(string message in messagesToSave) {
+					memoryBuilder.Append(message);
+					memoryBuilder.Append('\n');
+				}
+
+				foreach(var stream in Testing.client.GenerateAsync((answer == null) ? SystemPromptAIDM : memoryBuilder.ToString()).ToBlockingEnumerable()) {
 					Console.Write(stream.Response);
 					messagesBuilder.Append(stream.Response);
 				}
+
+				memoryBuilder.Clear();
 
 				messagesToSave.AddLast(messagesBuilder.ToString());
 				messagesBuilder.Clear();
