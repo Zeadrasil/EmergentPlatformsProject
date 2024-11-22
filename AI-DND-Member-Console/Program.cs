@@ -2,36 +2,44 @@
 using System.Threading.Tasks;
 using OllamaSharp;
 
-namespace AI_DND_Member_Console {
-	internal class Program {
-		static void Main(string[] args) {
-			Console.WriteLine("This is a chat space where you can interact with an AI and use it to play D&D,");
-			Console.WriteLine("with the AI serving either as a player or as a DM.");
-			Console.WriteLine("At any point, type \"/bye\" to end the chat.");
-			Console.Write('\n');
+namespace AI_DND_Member_Console
+{
+    internal class Program
+    {
+        static void Main(string[] args)
+        {
+            Console.WriteLine("Will you be operating as the DM for this session?");
+            //Testing.Run();
+            string answer = Console.ReadLine();
+            if (Testing.ProcessTrueFalseQuestion("Will you be acting as the DM?", answer) || Testing.ProcessTrueFalseQuestion("What role will you be playing?", "they are a Dungeon Master", answer))
+            {
+                RunAsDM();
+            }
+            else
+            {
+                RunAsPlayer();
+            }
+        }
 
-			// Setup the client
-			Uri uri = new Uri("http://localhost:11434");
-			OllamaApiClient client = new OllamaApiClient(uri);
-			client.SelectedModel = "qwen2.5:7b";
-
-			// Setup the chat
-			Chat chat = new Chat(client);
-
-			while(true) {
-				Console.Write(">> ");
-				string message = Console.ReadLine();
-
-				if(message == "/bye") {
-					break;
-				}
-
-				Console.Write('\n');
-				foreach(var answerToken in chat.SendAsync(message).ToBlockingEnumerable()) {
-					Console.Write(answerToken);
-				}
-				Console.Write("\n\n");
-			}
-		}
-	}
+        static void RunAsDM()
+        {
+            string answer;
+            do
+            {
+                Console.WriteLine("Would you like to exit the application (DM)?");
+                answer = Console.ReadLine();
+            }
+            while (!Testing.ProcessTrueFalseQuestion("Would you like to exit the application?", answer) && !Testing.ProcessTrueFalseQuestion("What would you like to do next?", "they would like to exit the application", answer));
+        }
+        static void RunAsPlayer()
+        {
+            string answer;
+            do
+            {
+                Console.WriteLine("Would you like to exit the application (Player)?");
+                answer = Console.ReadLine();
+            }
+            while (!Testing.ProcessTrueFalseQuestion("Would you like to exit the application?", answer) && !Testing.ProcessTrueFalseQuestion("What would you like to do next?", "they would like to exit the application", answer));
+        }
+    }
 }
