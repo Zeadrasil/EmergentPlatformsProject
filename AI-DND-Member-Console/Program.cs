@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Threading.Tasks;
+using OllamaSharp;
 
 namespace AI_DND_Member_Console
 {
@@ -7,13 +9,7 @@ namespace AI_DND_Member_Console
         static void Main(string[] args)
         {
             Console.WriteLine("Will you be operating as the DM for this session?");
-            //do
-            //{
-            //    Console.WriteLine(Console.ReadLine());
-            //    Console.WriteLine("Press n to end");
-            //}
-            //while ((Console.ReadLine() != "n"));
-            Testing.Run();
+            //Testing.Run();
             string answer = Console.ReadLine();
             if (Testing.ProcessTrueFalseQuestion("Will you be acting as the DM?", answer) || Testing.ProcessTrueFalseQuestion("What role will you be playing?", "they are a Dungeon Master", answer))
             {
