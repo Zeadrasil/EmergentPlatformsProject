@@ -11,8 +11,6 @@ namespace AI_DND_Member_Console
 		internal static StringBuilder messagesBuilder = new StringBuilder();
 		internal static LinkedList<string> messagesToSave = new LinkedList<string>();
 
-		internal static StringBuilder memoryBuilder = new StringBuilder();
-
 		internal static string SystemPromptAIDM = "You are the dungeon master for a game of D&D 5th edition. Act as the DM would, giving players the ability to act on their own while also enforcing the rules of the game. There is only one player in this session.";
 		internal static string SystemPromptAIPlayer = "You are a player in a game of D&D 5th edition. Act as a player would, rolling dice and roleplaying while trying to follow the rules to the best of your ability. You are the only player in this session.";
 		
@@ -39,14 +37,16 @@ namespace AI_DND_Member_Console
 		{
 			messagesToSave.AddFirst(SystemPromptAIPlayer);
 
+			StringBuilder memoryBuilder = new StringBuilder();
+			memoryBuilder.AppendLine(SystemPromptAIPlayer);
+
 			string? answer = null;
 			do
 			{
-				if(answer != null) messagesToSave.AddLast(answer);
-
-				foreach(string message in messagesToSave) {
-					memoryBuilder.Append(message);
-					memoryBuilder.Append('\n');
+				if(answer != null)
+				{
+					messagesToSave.AddLast(answer);
+					memoryBuilder.AppendLine(answer);
 				}
 
 				foreach(var stream in Testing.client.GenerateAsync((answer == null) ? SystemPromptAIPlayer : memoryBuilder.ToString()).ToBlockingEnumerable()) {
@@ -54,9 +54,8 @@ namespace AI_DND_Member_Console
 					messagesBuilder.Append(stream.Response);
 				}
 
-				memoryBuilder.Clear();
-
 				messagesToSave.AddLast(messagesBuilder.ToString());
+				memoryBuilder.AppendLine(messagesBuilder.ToString());
 				messagesBuilder.Clear();
 
 				Console.Write('\n');
@@ -97,14 +96,16 @@ namespace AI_DND_Member_Console
 		{
 			messagesToSave.AddFirst(SystemPromptAIDM);
 
+			StringBuilder memoryBuilder = new StringBuilder();
+			memoryBuilder.AppendLine(SystemPromptAIDM);
+
 			string? answer = null;
 			do
 			{
-				if(answer != null) messagesToSave.AddLast(answer);
-
-				foreach(string message in messagesToSave) {
-					memoryBuilder.Append(message);
-					memoryBuilder.Append('\n');
+				if(answer != null)
+				{
+					messagesToSave.AddLast(answer);
+					memoryBuilder.AppendLine(answer);
 				}
 
 				foreach(var stream in Testing.client.GenerateAsync((answer == null) ? SystemPromptAIDM : memoryBuilder.ToString()).ToBlockingEnumerable()) {
@@ -112,9 +113,8 @@ namespace AI_DND_Member_Console
 					messagesBuilder.Append(stream.Response);
 				}
 
-				memoryBuilder.Clear();
-
 				messagesToSave.AddLast(messagesBuilder.ToString());
+				memoryBuilder.AppendLine(messagesBuilder.ToString());
 				messagesBuilder.Clear();
 
 				Console.Write('\n');
