@@ -42,7 +42,12 @@ namespace AI_DND_Member_Console
 			messagesToSave.AddFirst(SystemPromptAIPlayer);
 
 			string? answer = null;
-			do
+            Console.Write("Give a background as to the story and universe of this campaign, then set the scene for the player.\n");
+            Console.Write('\n');
+            Console.Write("\n>>> ");
+            answer = Console.ReadLine();
+            Console.Write('\n');
+            do
 			{
 				if(answer != null) messagesToSave.AddLast(answer);
 
@@ -100,7 +105,7 @@ namespace AI_DND_Member_Console
 			messagesToSave.AddFirst(SystemPromptAIDM);
 
 			string? answer = null;
-			do
+            do
 			{
 				if(answer != null) messagesToSave.AddLast(answer);
 
