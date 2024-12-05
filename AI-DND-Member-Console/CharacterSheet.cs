@@ -527,7 +527,7 @@ namespace AI_DND_Member_Console
         public static CharacterSheet FromTemplate(int level)
         {
             CharacterSheet characterSheet = new CharacterSheet();
-            characterSheet.name = Testing.GetResponse("Please start creating a new character. The first thing that will be needed is a name. Do not include anything in your response but the name of the new character.");
+            characterSheet.name = Testing.GetResponse("Please come up with a name for a DnD character. Do not include anything in your response but the name of the new character.");
             characterSheet.race = Testing.GetResponse($"You have started creating a DnD character named {characterSheet.name}. Please respond with the race that this character will be. Do not include anything in your response but the name of the race of the new character.");
             characterSheet.characterClass = Testing.GetResponse($"You have started creating a DnD character that is a {characterSheet.race} named {characterSheet.name}. Please respond with what class they are. Do not include anything in your response but the name of the new character's class.");
             characterSheet.characterLevel = level;
@@ -537,7 +537,7 @@ namespace AI_DND_Member_Console
             characterSheet.intelligence = int.Parse(Testing.GetResponse($"You have started creating a DnD character that is a level {level} {characterSheet.race} {characterSheet.characterClass} named {characterSheet.name}. Please respond with the intelligence value of the player, including nothing but the number of the stat in your response"));
             characterSheet.wisdom = int.Parse(Testing.GetResponse($"You have started creating a DnD character that is a level {level} {characterSheet.race} {characterSheet.characterClass} named {characterSheet.name}. Please respond with the wisdom value of the player, including nothing but the number of the stat in your response"));
             characterSheet.charisma = int.Parse(Testing.GetResponse($"You have started creating a DnD character that is a level {level} {characterSheet.race} {characterSheet.characterClass} named {characterSheet.name}. Please respond with the charisma value of the player, including nothing but the number of the stat in your response"));
-            characterSheet.maxHealth = int.Parse(Testing.GetResponse($"You have started creating a DnD character that is a level {level} {characterSheet.race} {characterSheet.characterClass} named {characterSheet.name} and the stats of Strength {characterSheet.strength}, Dexterity {characterSheet.dexterity}, Constitution {characterSheet.constitution}, Intelligence {characterSheet.intelligence}, Wisdom {characterSheet.wisdom}, Charisma {characterSheet.charisma}"));
+            characterSheet.maxHealth = int.Parse(Testing.GetResponse($"You have started creating a DnD character that is a level {level} {characterSheet.race} {characterSheet.characterClass} named {characterSheet.name} and the stats of Strength {characterSheet.strength}, Dexterity {characterSheet.dexterity}, Constitution {characterSheet.constitution}, Intelligence {characterSheet.intelligence}, Wisdom {characterSheet.wisdom}, Charisma {characterSheet.charisma}. What is the max health of this character? Respond with only the final number and nothing else."));
             characterSheet.details = Testing.GetResponse($"You have started creating a DnD character that is a level {level} {characterSheet.race} {characterSheet.characterClass} named {characterSheet.name} and the stats of Strength {characterSheet.strength}, Dexterity {characterSheet.dexterity}, Constitution {characterSheet.constitution}, Intelligence {characterSheet.intelligence}, Wisdom {characterSheet.wisdom}, Charisma {characterSheet.charisma}, and the max health of {characterSheet.maxHealth}. Please respond with the description of the character, including nothing in your response except for the character description.");
             characterSheet.currentHealth = characterSheet.maxHealth;
             int count = int.Parse(Testing.GetResponse($"You have started creating a DnD character that is a level {level} {characterSheet.race} {characterSheet.characterClass} named {characterSheet.name} and the stats of Strength {characterSheet.strength}, Dexterity {characterSheet.dexterity}, Constitution {characterSheet.constitution}, Intelligence {characterSheet.intelligence}, Wisdom {characterSheet.wisdom}, Charisma {characterSheet.charisma}, and the max health of {characterSheet.maxHealth}, with the character details of \"{characterSheet.details}\". Please respond with how many abilities the character should have, including nothing in your response except for the number of abilities."));
@@ -578,13 +578,14 @@ namespace AI_DND_Member_Console
                     (int, int) resultingDice = (0, 0);
                     foreach(string s in results)
                     {
+                        string actual = s.Replace("(", "").Replace(")", "");
                         if(resultingDice.Item1 == 0)
                         {
-                            resultingDice.Item1 = int.Parse(s);
+                            resultingDice.Item1 = int.Parse(actual);
                         }
                         else
                         {
-                            resultingDice.Item2 = int.Parse(s);
+                            resultingDice.Item2 = int.Parse(actual);
                         }
                     }
                     ability.healingDice = new (int, int)[] { resultingDice };
@@ -596,13 +597,14 @@ namespace AI_DND_Member_Console
                     (int, int) resultingDice = (0, 0);
                     foreach (string s in results)
                     {
+                        string actual = s.Replace("(", "").Replace(")", "");
                         if (resultingDice.Item1 == 0)
                         {
-                            resultingDice.Item1 = int.Parse(s);
+                            resultingDice.Item1 = int.Parse(actual);
                         }
                         else
                         {
-                            resultingDice.Item2 = int.Parse(s);
+                            resultingDice.Item2 = int.Parse(actual);
                         }
                     }
                     ability.damageDice = new (int, int)[] { resultingDice };
@@ -657,13 +659,14 @@ namespace AI_DND_Member_Console
                     (int, int) resultingDice = (0, 0);
                     foreach (string s in results)
                     {
+                        string actual = s.Replace("(", "").Replace(")", "");
                         if (resultingDice.Item1 == 0)
                         {
-                            resultingDice.Item1 = int.Parse(s);
+                            resultingDice.Item1 = int.Parse(actual);
                         }
                         else
                         {
-                            resultingDice.Item2 = int.Parse(s);
+                            resultingDice.Item2 = int.Parse(actual);
                         }
                     }
                     weapon.damageDice = new (int, int)[] { resultingDice };
