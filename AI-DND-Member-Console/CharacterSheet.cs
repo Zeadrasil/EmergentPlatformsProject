@@ -527,9 +527,13 @@ namespace AI_DND_Member_Console
         public static CharacterSheet FromTemplate(int level)
         {
             CharacterSheet characterSheet = new CharacterSheet();
-            characterSheet.name = Testing.GetResponse("Please come up with a name for a DnD character. Do not include anything in your response but the name of the new character.");
-            characterSheet.race = Testing.GetResponse($"You have started creating a DnD character named {characterSheet.name}. Please respond with the race that this character will be. Do not include anything in your response but the name of the race of the new character.");
-            characterSheet.characterClass = Testing.GetResponse($"You have started creating a DnD character that is a {characterSheet.race} named {characterSheet.name}. Please respond with what class they are. Do not include anything in your response but the name of the new character's class.");
+            characterSheet.characterClass = SetClass();
+            //characterSheet.characterClass = Testing.GetResponse("Please come up with a class for a DnD character. Do not include anything in your response but the class of the new character.");
+            characterSheet.race = Testing.GetResponse($"You have started creating a DnD character in the class {characterSheet.characterClass}. Please respond with the race that this character will be. Do not include anything in your response but the name of the race of the new character.");
+            characterSheet.name = Testing.GetResponse($"You have started creating a DnD character that is a {characterSheet.race} in the class {characterSheet.characterClass}. Please respond with what their name is. Do not include anything in your response but the name of the new character.");
+            //characterSheet.name = Testing.GetResponse("Please come up with a name for a DnD character. Do not include anything in your response but the name of the new character.");
+            //characterSheet.race = Testing.GetResponse($"You have started creating a DnD character named {characterSheet.name}. Please respond with the race that this character will be. Do not include anything in your response but the name of the race of the new character.");
+            //characterSheet.characterClass = Testing.GetResponse($"You have started creating a DnD character that is a {characterSheet.race} named {characterSheet.name}. Please respond with what class they are. Do not include anything in your response but the name of the new character's class.");
             characterSheet.characterLevel = level;
             characterSheet.strength = int.Parse(Testing.GetResponse($"You have started creating a DnD character that is a level {level} {characterSheet.race} {characterSheet.characterClass} named {characterSheet.name}. Please respond with the strength value of the player, including nothing but the number of the stat in your response"));
             characterSheet.dexterity = int.Parse(Testing.GetResponse($"You have started creating a DnD character that is a level {level} {characterSheet.race} {characterSheet.characterClass} named {characterSheet.name}. Please respond with the dexterity value of the player, including nothing but the number of the stat in your response"));
@@ -704,6 +708,28 @@ namespace AI_DND_Member_Console
                 }
             }
             return characterSheet;
+        }
+
+        public static string SetClass()
+        {
+            Random random = new Random();
+            switch (random.Next(12))
+            {
+                case 0: return "Barbarian";
+                case 1: return "Bard";
+                case 2: return "Cleric";
+                case 3: return "Druid";
+                case 4: return "Fighter";
+                case 5: return "Monk";
+                case 6: return "Paladin";
+                case 7: return "Ranger";
+                case 8: return "Rogue";
+                case 9: return "Sorcerer";
+                case 10: return "Warlock";
+                case 11: return "Wizard";
+                default: return "Fighter";
+
+            }
         }
 
         public static int SetHealth(int level, string charClass, int con)
