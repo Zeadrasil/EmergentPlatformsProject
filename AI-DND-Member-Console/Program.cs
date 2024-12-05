@@ -32,7 +32,7 @@ namespace AI_DND_Member_Console
             ability.damageDice = [(3, 10)];
             sheet.abilities.Add(ability);
             //CharacterSheet.FromString(Testing.GetResponse($"Please create a character sheet using the following as a template, being careful to not add any decoration or reorder any of the fields:\n{sheet.ToString()}"));
-            CharacterSheet.FromTemplate(1);
+            Console.WriteLine(CharacterSheet.FromTemplate(1).ToString());
             //Console.WriteLine(Testing.GetResponse($"Please summarize the following DnD character sheet in a readable format: {sheet.ToString()}"));
             //Console.WriteLine("Use an ability:");
             //Console.WriteLine(Testing.GetResponse($"Please use the ability \"{Console.ReadLine()}\" on the following character sheet: {sheet.ToString()}. If the character has an ability with a similar name, please respond with only the ability name, and if they do not respond with \"No Matching Ability\"."));

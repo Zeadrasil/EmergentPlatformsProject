@@ -645,7 +645,23 @@ namespace AI_DND_Member_Console
                     ammo.name = item.name;
                     ammo.description = item.description;
                     ammo.damageType = Testing.GetResponse($"What type of damage would the weapon {ammo.name} with the description \"{ammo.description}\" deal? respond with nothing but the damage type.");
-                    ammo.quantity = int.Parse(Testing.GetResponse($"How many instances of the item {item.name} would a level {characterSheet.characterLevel} {characterSheet.race} {characterSheet.characterClass} named {characterSheet.name} have? Respond with nothing but the number represnting the quantity of the item."));
+                    ammo.quantity = Math.Max(int.Parse(Testing.GetResponse($"How many instances of the item {item.name} would a level {characterSheet.characterLevel} {characterSheet.race} {characterSheet.characterClass} named {characterSheet.name} have? Respond with nothing but the number represnting the quantity of the item.")), 1);
+                    string result = Testing.GetResponse($"You have started creating a new character with the ammunition type {ammo.name} and the description of \"{ammo.description}\". Please respond with the number and type of dice used for determining the healing that this weapon does, in the format \"(number of dice)d(size of dice)\". Include nothing in your response but this value.");
+                    string[] results = result.Split('d');
+                    (int, int) resultingDice = (0, 0);
+                    foreach (string s in results)
+                    {
+                        string actual = s.Replace("(", "").Replace(")", "");
+                        if (resultingDice.Item1 == 0)
+                        {
+                            resultingDice.Item1 = int.Parse(actual);
+                        }
+                        else
+                        {
+                            resultingDice.Item2 = int.Parse(actual);
+                        }
+                    }
+                    ammo.dice = new (int, int)[] {resultingDice};
                     characterSheet.inventory.Add(ammo);
                 }
                 else if(bool.Parse(Testing.GetResponse($"Would the item {item.name} with the description \"{item.description}\" be considered a weapon? Include nothing in your response besides \"true\" or \"false\" depending on whether it would be.")))
@@ -653,7 +669,11 @@ namespace AI_DND_Member_Console
                     Weapon weapon = new Weapon();
                     weapon.name = item.name;
                     weapon.description = item.description;
-                    weapon.ammoType = Testing.GetResponse($"Would the weapon {weapon.name} fire some sort of ammunition? If so respond with only the name of the type of ammunition it would fire. If not, do not respond at all.");
+                    weapon.ammoType = Testing.GetResponse($"Would the weapon {weapon.name} fire some sort of ammunition? If so respond with only the name of the type of ammunition it would fire. If it is some sort of projectile that does not require another item besides the weapon, or it does not fire some form of ammunition, respond with \"none\".").Trim(); ;
+                    if (weapon.ammoType.Trim().ToLower() == "none".ToLower())
+                    {
+                        weapon.ammoType = "";
+                    }
                     string result = Testing.GetResponse($"You have started creating a new character with the weapon {weapon.name} and the description of \"{weapon.description}\". Please respond with the number and type of dice used for determining the healing that this weapon does, in the format \"(number of dice)d(size of dice)\". Include nothing in your response but this value.");
                     string[] results = result.Split('d');
                     (int, int) resultingDice = (0, 0);
@@ -672,11 +692,12 @@ namespace AI_DND_Member_Console
                     weapon.damageDice = new (int, int)[] { resultingDice };
                     weapon.quantity = 1;
                     weapon.damageType = Testing.GetResponse($"What type of damage would the weapon {weapon.name} with the description \"{weapon.description}\" deal? respond with nothing but the damage type.");
+                    weapon.owner = characterSheet;
                     characterSheet.inventory.Add(weapon);
                 }
                 else
                 {
-                    item.quantity = int.Parse(Testing.GetResponse($"How many instances of the item {item.name} would a level {characterSheet.characterLevel} {characterSheet.race} {characterSheet.characterClass} named {characterSheet.name} have? Respond with nothing but the number represnting the quantity of the item."));
+                    item.quantity = Math.Max(int.Parse(Testing.GetResponse($"How many instances of the item {item.name} would a level {characterSheet.characterLevel} {characterSheet.race} {characterSheet.characterClass} named {characterSheet.name} have? Respond with nothing but the number represnting the quantity of the item.")), 1);
                     characterSheet.inventory.Add(item);
                 }
             }
