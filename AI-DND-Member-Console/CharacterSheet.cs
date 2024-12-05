@@ -11,9 +11,10 @@ namespace AI_DND_Member_Console
     public class CharacterSheet
     {
         public string name = "";
+        public string race = "";
         public string characterClass = "";
         public int characterLevel;
-        public string details;
+        public string details = "";
 
 
         public int strength = 10;
@@ -92,7 +93,7 @@ namespace AI_DND_Member_Console
 
         public override string ToString()
         {
-            StringBuilder sb = new StringBuilder($"Name: {name}\nClass: {characterClass}\nLevel: {characterLevel}\nStrength: {strength}\nDexterity: {dexterity}\nConstitution: {constitution}\nIntelligence: {intelligence}\nWisdom: {wisdom}\nCharisma: {charisma}\nHealth: {currentHealth}\nMax Health: {maxHealth}\nTemporary Health: {temporaryHealth}\nDetails: {details}\nAbilities:\n");
+            StringBuilder sb = new StringBuilder($"Name: {name}\nRace: {race}\nClass: {characterClass}\nLevel: {characterLevel}\nStrength: {strength}\nDexterity: {dexterity}\nConstitution: {constitution}\nIntelligence: {intelligence}\nWisdom: {wisdom}\nCharisma: {charisma}\nHealth: {currentHealth}\nMax Health: {maxHealth}\nTemporary Health: {temporaryHealth}\nDetails: {details}\nAbilities:\n");
             foreach(Ability ability in abilities)
             {
                 sb.AppendLine(ability.ToString());
@@ -130,6 +131,11 @@ namespace AI_DND_Member_Console
                             {
                                 modifiedLine = line.Remove(0, 5).Trim();
                                 characterSheet.name = modifiedLine;
+                            }
+                            if (line.ToLower().Contains("race:"))
+                            {
+                                modifiedLine = line.Remove(0, 5).Trim();
+                                characterSheet.race = modifiedLine;
                             }
                             else if (line.ToLower().Contains("class:"))
                             {
