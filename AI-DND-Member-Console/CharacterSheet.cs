@@ -34,6 +34,7 @@ namespace AI_DND_Member_Console
         public List<Item> inventory = new List<Item>();
         public List<Ability> abilities = new List<Ability>();
 
+        //Find and use a weapon
         public int UseWeapon(string weapon)
         {
             foreach(Item item in inventory)
@@ -46,16 +47,19 @@ namespace AI_DND_Member_Console
             return -1;
         }
 
+        //Find and use an ability
         public void useAbility(string ability, CharacterSheet target)
         {
             foreach(Ability checkingAbility in abilities)
             {
                 if(checkingAbility.name == ability)
                 {
+                    //Apply healing
                     if(checkingAbility.healing)
                     {
                         target.Heal(checkingAbility.GetHealing());
                     }
+                    //Apply damage
                     else if(checkingAbility.damage)
                     {
                         target.Damage(checkingAbility.GetDamage());
@@ -65,39 +69,52 @@ namespace AI_DND_Member_Console
             }
         }
 
+        //Heal yourselg by given amount
         public void Heal(int amount)
         {
             currentHealth = Math.Clamp(currentHealth + amount, 0, 100);
         }
-        public string Damage(int amount)
+
+        //Damage yourself by given amount
+        public int Damage(int amount)
         {
+            //Use temporary health first
             if(temporaryHealth > 0)
             {
                 temporaryHealth -= amount;
+
+                //If temporary health is insufficient, use normal
                 if(temporaryHealth < 0)
                 {
                     currentHealth += temporaryHealth;
                     temporaryHealth = 0;
                 }
             }
+            //If no temporary health go straight to normal
             else
             {
                 currentHealth -= amount;
             }
+            //If out of health
             if(currentHealth <= 0)
             {
                 currentHealth = 0;
             }
-            return currentHealth.ToString();
+            return currentHealth;
         }
 
+        //Get sheet as string for use with the AI
         public override string ToString()
         {
+            //Get the basic sheet data
             StringBuilder sb = new StringBuilder($"Name: {name}\nRace: {race}\nClass: {characterClass}\nLevel: {characterLevel}\nStrength: {strength}\nDexterity: {dexterity}\nConstitution: {constitution}\nIntelligence: {intelligence}\nWisdom: {wisdom}\nCharisma: {charisma}\nHealth: {currentHealth}\nMax Health: {maxHealth}\nTemporary Health: {temporaryHealth}\nDetails: {details}\nAbilities:\n");
+            
+            //Go through and add all abilities
             foreach(Ability ability in abilities)
             {
                 sb.AppendLine(ability.ToString());
             }
+            //Go through inventory and add all of the items
             sb.AppendLine("Inventory:");
             foreach(Item item in inventory)
             {
@@ -107,6 +124,7 @@ namespace AI_DND_Member_Console
             return result.Remove(result.Length - 1);
         }
 
+        //Deprecating, test others first pls
         public static CharacterSheet FromString(string str)
         {
             CharacterSheet characterSheet = new CharacterSheet();

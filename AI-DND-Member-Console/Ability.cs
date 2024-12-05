@@ -17,12 +17,17 @@ namespace AI_DND_Member_Console
 
         public (int, int)[] damageDice;
 
+        //Get the amount that the ability heals
         public int GetHealing()
         {
+            //Check if you can actually heal with this ability
             if (healing)
             {
+                //Healing data storage
                 Random rand = new Random();
                 int healing = 0;
+
+                //Go through each dice set for healing
                 foreach ((int, int) set in healingDice)
                 {
                     for (int i = 0; i < set.Item1; i++)
@@ -30,17 +35,23 @@ namespace AI_DND_Member_Console
                         healing += rand.Next(set.Item2);
                     }
                 }
+                //Return the amount you healed with this usage
                 return healing;
             }
             return 0;
         }
 
+        //Get the damage a use of this ability would deal
         public int GetDamage()
         {
+            //If the ability does not deal damage, don't
             if (damage)
             {
+                //Damage data storage
                 Random rand = new Random();
                 int damage = 0;
+
+                //Go through each set of dice to add their damage
                 foreach ((int, int) set in damageDice)
                 {
                     for (int i = 0; i < set.Item1; i++)

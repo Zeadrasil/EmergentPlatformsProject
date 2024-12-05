@@ -11,6 +11,8 @@ namespace AI_DND_Member_Console
         public string name;
         public int quantity;
         public string description;
+
+        //Turn into string form for interacting with AI
         public override string ToString()
         {
             return $"Item Name: {name}\nQuantity: {quantity}\nDescription: {description}";

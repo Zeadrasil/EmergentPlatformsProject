@@ -15,8 +15,11 @@ namespace AI_DND_Member_Console
 
         public int rollDamage()
         {
+            //Create storage variables
             Random rand = new Random();
             int damage = 0;
+
+            //Go through each set of dice in weapon rolls (eg for something like 2d4 + 1d6)
             foreach ((int, int) set in damageDice)
             {
                 for (int i = 0; i < set.Item1; i++)
@@ -24,13 +27,18 @@ namespace AI_DND_Member_Console
                     damage += rand.Next(set.Item2) + 1;
                 }
             }
+            //Apply minimum damage modifier, from like a +1 sword or something
             damage += minDamage;
+
+            //If you do not fire ammunition, return the damage
             if (ammoType == null)
             {
                 return damage;
             }
+            //If you do, deal with it
             else if(ammoType.quantity > 0)
             {
+                //Go through all of the damage dice of the ammunition
                 foreach((int, int) set in ammoType.dice)
                 {
                     for(int i = 0; i < set.Item1; i++)
@@ -38,14 +46,18 @@ namespace AI_DND_Member_Console
                         damage += rand.Next(set.Item2) + 1;
                     }
                 }
+                //apply the minimum damage of the ammo
                 return damage + ammoType.minDamage;
             }
+            //If you are out of ammo you cannot use the weapon
             return 0;
         }
 
+        //Turn into string for interactions with the AI
         public override string ToString()
         {
             StringBuilder sb = new StringBuilder(base.ToString());
+            //Add ammo type if relevant
             if(ammoType != null)
             {
                 sb.AppendLine($"\nAmmunition Type: {ammoType}");
@@ -54,12 +66,18 @@ namespace AI_DND_Member_Console
             {
                 sb.AppendLine("Ammunition Type: None");
             }
+            //Add damage type
             sb.AppendLine($"Damage Type: {damageType}");
+
+            //Begin adding dice
             sb.AppendLine("Dice:");
+
+            //Loop through all dice
             foreach ((int, int) set in damageDice)
             {
                 sb.AppendLine($"{set.Item1}d{set.Item2}");
             }
+            //Add minimum damage
             sb.Append($"Minimum damage: {minDamage}");
             return sb.ToString();
         }
