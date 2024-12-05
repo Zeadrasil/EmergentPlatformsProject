@@ -593,7 +593,9 @@ namespace AI_DND_Member_Console
                         }
                     }
                 }
+                characterSheet.abilities.Add(ability);
             }
+
         }
     }
 }
