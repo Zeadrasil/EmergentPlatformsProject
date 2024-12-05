@@ -537,7 +537,8 @@ namespace AI_DND_Member_Console
             characterSheet.intelligence = int.Parse(Testing.GetResponse($"You have started creating a DnD character that is a level {level} {characterSheet.race} {characterSheet.characterClass} named {characterSheet.name}. Please respond with the intelligence value of the player, including nothing but the number of the stat in your response"));
             characterSheet.wisdom = int.Parse(Testing.GetResponse($"You have started creating a DnD character that is a level {level} {characterSheet.race} {characterSheet.characterClass} named {characterSheet.name}. Please respond with the wisdom value of the player, including nothing but the number of the stat in your response"));
             characterSheet.charisma = int.Parse(Testing.GetResponse($"You have started creating a DnD character that is a level {level} {characterSheet.race} {characterSheet.characterClass} named {characterSheet.name}. Please respond with the charisma value of the player, including nothing but the number of the stat in your response"));
-            characterSheet.maxHealth = int.Parse(Testing.GetResponse($"You have started creating a DnD character that is a level {level} {characterSheet.race} {characterSheet.characterClass} named {characterSheet.name} and the stats of Strength {characterSheet.strength}, Dexterity {characterSheet.dexterity}, Constitution {characterSheet.constitution}, Intelligence {characterSheet.intelligence}, Wisdom {characterSheet.wisdom}, Charisma {characterSheet.charisma}. What is the max health of this character? Respond with only the final number and nothing else."));
+            //characterSheet.maxHealth = int.Parse(Testing.GetResponse($"You have started creating a DnD character that is a level {level} {characterSheet.race} {characterSheet.characterClass} named {characterSheet.name} and the stats of Strength {characterSheet.strength}, Dexterity {characterSheet.dexterity}, Constitution {characterSheet.constitution}, Intelligence {characterSheet.intelligence}, Wisdom {characterSheet.wisdom}, Charisma {characterSheet.charisma}. What is the max health of this character? Respond with only the final number and nothing else."));
+            characterSheet.maxHealth = SetHealth(level, characterSheet.characterClass, characterSheet.constitution);
             //characterSheet.details = Testing.GetResponse($"You have started creating a DnD character that is a level {level} {characterSheet.race} {characterSheet.characterClass} named {characterSheet.name} and the stats of Strength {characterSheet.strength}, Dexterity {characterSheet.dexterity}, Constitution {characterSheet.constitution}, Intelligence {characterSheet.intelligence}, Wisdom {characterSheet.wisdom}, Charisma {characterSheet.charisma}, and the max health of {characterSheet.maxHealth}. Please respond with the description of the character, including nothing in your response except for the character description.");
             characterSheet.details = Testing.GetResponse($"You have started creating a DnD character that is a level {level} {characterSheet.race} {characterSheet.characterClass} named {characterSheet.name} and the stats of Strength {characterSheet.strength}, Dexterity {characterSheet.dexterity}, Constitution {characterSheet.constitution}, Intelligence {characterSheet.intelligence}, Wisdom {characterSheet.wisdom}, Charisma {characterSheet.charisma}, and the max health of {characterSheet.maxHealth}. Please respond with the description of the character, including nothing in your response except for the character description. Attempt to keep your response to 100 words or less, and attempt to describe things about how the character acts and looks.");
             characterSheet.currentHealth = characterSheet.maxHealth;
@@ -703,6 +704,23 @@ namespace AI_DND_Member_Console
                 }
             }
             return characterSheet;
+        }
+
+        public static int SetHealth(int level, string charClass, int con)
+        {
+            if (charClass.Contains("Barbarian")) return ((level - 1) * 7) + (level * ((int)Math.Round(((double)con - 10) / 2, 0))) + 12;
+            else if (charClass.Contains("Bard")) return ((level - 1) * 5) + (level * ((int)Math.Round(((double)con - 10) / 2, 0))) + 8;
+            else if (charClass.Contains("Cleric")) return ((level - 1) * 5) + (level * ((int)Math.Round(((double)con - 10) / 2, 0))) + 8;
+            else if (charClass.Contains("Druid")) return ((level - 1) * 5) + (level * ((int)Math.Round(((double)con - 10) / 2, 0))) + 8;
+            else if (charClass.Contains("Fighter")) return ((level - 1) * 6) + (level * ((int)Math.Round(((double)con - 10) / 2, 0))) + 10;
+            else if (charClass.Contains("Monk")) return ((level - 1) * 5) + (level * ((int)Math.Round(((double)con - 10) / 2, 0))) + 8;
+            else if (charClass.Contains("Paladin")) return ((level - 1) * 6) + (level * ((int)Math.Round(((double)con - 10) / 2, 0))) + 10;
+            else if (charClass.Contains("Ranger")) return ((level - 1) * 6) + (level * ((int)Math.Round(((double)con - 10) / 2, 0))) + 10;
+            else if (charClass.Contains("Rogue")) return ((level - 1) * 5) + (level * ((int)Math.Round(((double)con - 10) / 2, 0))) + 8;
+            else if (charClass.Contains("Sorcerer")) return ((level - 1) * 4) + (level * ((int)Math.Round(((double)con - 10) / 2, 0))) + 6;
+            else if (charClass.Contains("Warlock")) return ((level - 1) * 5) + (level * ((int)Math.Round(((double)con - 10) / 2, 0))) + 8;
+            else if (charClass.Contains("Wizard")) return ((level - 1) * 4) + (level * ((int)Math.Round(((double)con - 10) / 2, 0))) + 6;
+            else return ((level - 1) * 5) + (level * ((int)Math.Round(((double)con - 10) / 2, 0))) + 8;
         }
     }
 }
