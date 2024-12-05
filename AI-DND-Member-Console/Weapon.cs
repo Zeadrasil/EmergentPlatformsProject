@@ -69,7 +69,7 @@ namespace AI_DND_Member_Console
             }
             else
             {
-                sb.AppendLine("Ammunition Type: None");
+                sb.AppendLine("\nAmmunition Type: None");
             }
             //Add damage type
             sb.AppendLine($"Damage Type: {damageType}");
