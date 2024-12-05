@@ -124,393 +124,405 @@ namespace AI_DND_Member_Console
             return result.Remove(result.Length - 1);
         }
 
-        //Deprecating, test others first pls
-        public static CharacterSheet FromString(string str)
+        public Ammunition GetAmmunition(string name)
         {
-            CharacterSheet characterSheet = new CharacterSheet();
-            string[] lines = str.Split("\n");
-            int readMode = 0;
-            Ability creatingAbility = null;
-            Item creatingItem = null;
-            Ammunition creatingAmmunition = null;
-            Weapon creatingWeapon = null;
-            Dictionary<string, Ammunition> createdAmmos = new Dictionary<string, Ammunition>();
-            Dictionary<string, List<Weapon>> awaitingAmmos = new Dictionary<string, List<Weapon>>();
-            string awaitingName = "";
-            (int, int) diceHolder;
-            foreach(string line in lines)
+            foreach(Item item in inventory)
             {
-                string modifiedLine;
-                switch(readMode)
+                if(item.name.ToLower().Contains(name.ToLower()))
                 {
-                    case 0:
-                        {
-                            if (line.ToLower().Contains("name:"))
-                            {
-                                modifiedLine = line.Remove(0, 5).Trim();
-                                characterSheet.name = modifiedLine;
-                            }
-                            if (line.ToLower().Contains("race:"))
-                            {
-                                modifiedLine = line.Remove(0, 5).Trim();
-                                characterSheet.race = modifiedLine;
-                            }
-                            else if (line.ToLower().Contains("class:"))
-                            {
-                                modifiedLine = line.Remove(0, 6).Trim();
-                                characterSheet.characterClass = modifiedLine;
-                            }
-                            else if (line.ToLower().Contains("level:"))
-                            {
-                                modifiedLine = line.Remove(0, 6).Trim();
-                                characterSheet.characterLevel = int.Parse(modifiedLine);
-                            }
-                            else if (line.ToLower().Contains("strength:"))
-                            {
-                                modifiedLine = line.Remove(0, 9).Trim();
-                                characterSheet.strength = int.Parse(modifiedLine);
-                            }
-                            else if (line.ToLower().Contains("dexterity:"))
-                            {
-                                modifiedLine = line.Remove(0, 10).Trim();
-                                characterSheet.dexterity = int.Parse(modifiedLine);
-                            }
-                            else if (line.ToLower().Contains("constitution:"))
-                            {
-                                modifiedLine = line.Remove(0, 13).Trim();
-                                characterSheet.constitution = int.Parse(modifiedLine);
-                            }
-                            else if (line.ToLower().Contains("intelligence:"))
-                            {
-                                modifiedLine = line.Remove(0, 13).Trim();
-                                characterSheet.intelligence = int.Parse(modifiedLine);
-                            }
-                            else if (line.ToLower().Contains("wisdom:"))
-                            {
-                                modifiedLine = line.Remove(0, 7).Trim();
-                                characterSheet.wisdom = int.Parse(modifiedLine);
-                            }
-                            else if (line.ToLower().Contains("charisma:"))
-                            {
-                                modifiedLine = line.Remove(0, 9).Trim();
-                                characterSheet.charisma = int.Parse(modifiedLine);
-                            }
-                            else if (line.ToLower().Contains("health:"))
-                            {
-                                modifiedLine = line.Remove(0, 7).Trim();
-                                characterSheet.currentHealth = int.Parse(modifiedLine);
-                            }
-                            else if (line.ToLower().Contains("max health:"))
-                            {
-                                modifiedLine = line.Remove(0, 11).Trim();
-                                characterSheet.maxHealth = int.Parse(modifiedLine);
-                            }
-                            else if (line.ToLower().Contains("maximum health:"))
-                            {
-                                modifiedLine = line.Remove(0, 15).Trim();
-                                characterSheet.maxHealth = int.Parse(modifiedLine);
-                            }
-                            else if (line.ToLower().Contains("temp health:"))
-                            {
-                                modifiedLine = line.Remove(0, 12).Trim();
-                                characterSheet.temporaryHealth = int.Parse(modifiedLine);
-                            }
-                            else if (line.ToLower().Contains("temporary health:"))
-                            {
-                                modifiedLine = line.Remove(0, 17).Trim();
-                                characterSheet.strength = int.Parse(modifiedLine);
-                            }
-                            else if (line.ToLower().Contains("hitpoints:"))
-                            {
-                                modifiedLine = line.Remove(0, 10).Trim();
-                                characterSheet.currentHealth = int.Parse(modifiedLine);
-                            }
-                            else if (line.ToLower().Contains("max hitpoints:"))
-                            {
-                                modifiedLine = line.Remove(0, 14).Trim();
-                                characterSheet.maxHealth = int.Parse(modifiedLine);
-                            }
-                            else if (line.ToLower().Contains("maximum hitpoints:"))
-                            {
-                                modifiedLine = line.Remove(0, 19).Trim();
-                                characterSheet.maxHealth = int.Parse(modifiedLine);
-                            }
-                            else if (line.ToLower().Contains("temp hitpoints:"))
-                            {
-                                modifiedLine = line.Remove(0, 16).Trim();
-                                characterSheet.temporaryHealth = int.Parse(modifiedLine);
-                            }
-                            else if (line.ToLower().Contains("temporary hitpoints:"))
-                            {
-                                modifiedLine = line.Remove(0, 21).Trim();
-                                characterSheet.strength = int.Parse(modifiedLine);
-                            }
-                            else if (line.ToLower().Contains("details:"))
-                            {
-                                modifiedLine = line.Remove(0, 8).Trim();
-                                characterSheet.details = modifiedLine;
-                            }
-                            else if (line.ToLower().Contains("abilities:"))
-                            {
-                                readMode = 1;
-                            }
-                            else if (line.ToLower().Contains("inventory:"))
-                            {
-                                readMode = 3;
-                            }
-                            break;
-                        }
-                    case 1:
-                        {
-                            if(line.ToLower().Contains("ability name:"))
-                            {
-                                creatingAbility = new Ability();
-                                creatingAbility.name = line.Remove(0, 13).Trim();
-                            }
-                            else if(line.ToLower().Contains("type:"))
-                            {
-                                modifiedLine = line.ToLower().Trim();
-                                creatingAbility.healing = modifiedLine.ToLower() == "healing";
-                                creatingAbility.damage = modifiedLine.ToLower() == "damaging";
-                            }
-                            else if(line.ToLower().Contains("dice:"))
-                            {
-                                readMode = 2;
-                            }
-                            else if(line.ToLower().Contains("inventory:"))
-                            {
-                                readMode = 3;
-                            }
-                            break;
-                        }
-                    case 2:
-                        {
-                            if(line.ToLower().Contains("ability name:"))
-                            {
-                                creatingAbility = new Ability();
-                                creatingAbility.name = line.Remove(0, 13).Trim();
-                                readMode = 1;
-                            }
-                            else if(line.ToLower().Contains("inventory:"))
-                            {
-                                readMode = 3;
-                            }
-                            else
-                            {
-                                try
-                                {
-                                    diceHolder = (0, 0);
-                                    foreach(string s in line.Split('d'))
-                                    {
-                                        if(diceHolder.Item1 == 0)
-                                        {
-                                            diceHolder.Item1 = int.Parse(s);
-                                        }
-                                        else
-                                        {
-                                            diceHolder.Item2 = int.Parse(s);
-                                        }
-                                    }
-                                    if(creatingAbility.healing)
-                                    {
-                                        List<(int, int)> allDiceHolder = new List<(int, int)>(creatingAbility.healingDice);
-                                        allDiceHolder.Add(diceHolder);
-                                        creatingAbility.healingDice = allDiceHolder.ToArray();
-                                    }
-                                    if(creatingAbility.damage)
-                                    {
-                                        List<(int, int)> allDiceHolder = new List<(int, int)>(creatingAbility.healingDice);
-                                        allDiceHolder.Add(diceHolder);
-                                        creatingAbility.healingDice = allDiceHolder.ToArray();
-                                    }
-
-                                }
-                                catch
-                                {
-                                    readMode = 1;
-                                }
-                            }
-                            break;
-                        }
-                    case 3:
-                        {
-                            if (line.ToLower().Contains("item name:"))
-                            {
-                                if(creatingItem != null)
-                                {
-                                    characterSheet.inventory.Add(creatingItem);
-                                }
-                                modifiedLine = line.Remove(0, 10).Trim();
-                                creatingItem = new Item();
-                                creatingItem.name = modifiedLine;
-                                awaitingName = "";
-                            }
-                            else if(line.ToLower().Contains("quantity:"))
-                            {
-                                modifiedLine = line.Remove(0, 9).Trim();
-                                creatingItem.quantity = int.Parse(modifiedLine);
-                            }
-                            else if(line.ToLower().Contains("description:"))
-                            {
-                                modifiedLine = line.Remove(0, 12).Trim();
-                                creatingItem.description = modifiedLine;
-                            }
-                            else if(line.ToLower().Contains("ammunition type:"))
-                            {
-                                readMode = 4;
-                                creatingWeapon = new Weapon();
-                                creatingWeapon.name = creatingItem.name;
-                                creatingWeapon.quantity = creatingItem.quantity;
-                                creatingWeapon.description = creatingItem.description;
-                                modifiedLine = line.Remove(0, 16).Trim().ToLower();
-                                if(createdAmmos.TryGetValue(modifiedLine, out Ammunition ammo))
-                                {
-                                    creatingWeapon.ammoType = ammo;
-                                    awaitingName = "";
-                                }
-                                else
-                                {
-                                    awaitingName = modifiedLine;
-                                    if (awaitingAmmos.TryGetValue(modifiedLine, out List<Weapon> weaponsAlreadyPresent))
-                                    {
-                                        weaponsAlreadyPresent.Add(creatingWeapon);
-                                        awaitingAmmos[modifiedLine] = weaponsAlreadyPresent;
-                                    }
-                                    else
-                                    {
-                                        awaitingAmmos.Add(modifiedLine, new List<Weapon> { creatingWeapon });
-                                    }
-                                }
-                                creatingItem = creatingWeapon;
-                            }
-                            else if(line.ToLower().Contains("damage type:"))
-                            {
-                                readMode = 4;
-                                creatingWeapon = new Weapon();
-                                creatingWeapon.name = creatingItem.name;
-                                creatingWeapon.quantity = creatingItem.quantity;
-                                creatingWeapon.description = creatingItem.description;
-                                modifiedLine = line.Remove(0, 12);
-                                creatingWeapon.damageType = modifiedLine;
-                                creatingItem = creatingWeapon;
-                            }
-                            else if(line.ToLower().Contains("dice:"))
-                            {
-                                readMode = 6;
-                                creatingAmmunition = new Ammunition();
-                                creatingAmmunition.name = creatingItem.name;
-                                creatingAmmunition.quantity = creatingItem.quantity;
-                                creatingAmmunition.description = creatingItem.description;
-                                if(awaitingAmmos.TryGetValue(creatingAmmunition.name.ToLower(), out List<Weapon> weapons))
-                                {
-                                    foreach(Weapon weapon in weapons)
-                                    {
-                                        weapon.ammoType = creatingAmmunition;
-                                    }
-                                }
-                                createdAmmos.Add(creatingAmmunition.name.ToLower(), creatingAmmunition);
-                                creatingItem = creatingAmmunition;
-                            }
-                            break;
-                        }
-                    case 4:
-                        {
-                            if (line.ToLower().Contains("damage type:"))
-                            {
-                                modifiedLine = line.Remove(0, 12);
-                                creatingWeapon.damageType = modifiedLine;
-                            }
-                            else if(line.ToLower().Contains("dice:"))
-                            {
-                                readMode = 5;
-                            }
-                            break;
-                        }
-                    case 5:
-                        {
-                            if (line.ToLower().Contains("minimum damage:"))
-                            {
-                                readMode = 3;
-                                modifiedLine = line.Remove(0, 15);
-                                creatingWeapon.minDamage = int.Parse(modifiedLine);
-                            }
-                            else if(!string.IsNullOrWhiteSpace(line))
-                            {
-                                try
-                                {
-                                    diceHolder = (0, 0);
-                                    foreach (string s in line.Split('d'))
-                                    {
-                                        if (diceHolder.Item1 == 0)
-                                        {
-                                            diceHolder.Item1 = int.Parse(s);
-                                        }
-                                        else
-                                        {
-                                            diceHolder.Item2 = int.Parse(s);
-                                        }
-                                    }
-                                    List<(int, int)> allDiceHolder = new List<(int, int)>(creatingWeapon.damageDice);
-                                    allDiceHolder.Add(diceHolder);
-                                    creatingWeapon.damageDice = allDiceHolder.ToArray();
-                                }
-                                catch
-                                {
-
-                                }
-                            }
-                            break;
-                        }
-                    case 6:
-                        {
-                            if(line.ToLower().Contains("item name:"))
-                            {
-                                readMode = 3; 
-                                if (creatingItem != null)
-                                {
-                                    characterSheet.inventory.Add(creatingItem);
-                                }
-                                modifiedLine = line.Remove(0, 10).Trim();
-                                creatingItem = new Item();
-                                creatingItem.name = modifiedLine;
-                                awaitingName = "";
-                            }
-                            else if(line.ToLower().Contains("minimum damage:"))
-                            {
-                                modifiedLine = line.Remove(0, 15);
-                                creatingAmmunition.minDamage = int.Parse(modifiedLine);
-                            }
-                            else if(line.ToLower().Contains("damage type:"))
-                            {
-                                modifiedLine = line.Remove(0, 12);
-                                creatingAmmunition.damageType = modifiedLine;
-                            }
-                            else if(!string.IsNullOrWhiteSpace(line))
-                            {
-                                diceHolder = (0, 0);
-                                foreach (string s in line.Split('d'))
-                                {
-                                    if (diceHolder.Item1 == 0)
-                                    {
-                                        diceHolder.Item1 = int.Parse(s);
-                                    }
-                                    else
-                                    {
-                                        diceHolder.Item2 = int.Parse(s);
-                                    }
-                                }
-                                List<(int, int)> allDiceHolder = new List<(int, int)>(creatingAmmunition.dice);
-                                allDiceHolder.Add(diceHolder);
-                                creatingAmmunition.dice = allDiceHolder.ToArray();
-                            }
-                            creatingItem = creatingAmmunition;
-                            break;
-                        }
+                    return (Ammunition)item;
                 }
-                
             }
-            return characterSheet;
+            return null;
         }
+
+        //Deprecated, but kept for reference later
+        //public static CharacterSheet FromString(string str)
+        //{
+        //    CharacterSheet characterSheet = new CharacterSheet();
+        //    string[] lines = str.Split("\n");
+        //    int readMode = 0;
+        //    Ability creatingAbility = null;
+        //    Item creatingItem = null;
+        //    Ammunition creatingAmmunition = null;
+        //    Weapon creatingWeapon = null;
+        //    Dictionary<string, Ammunition> createdAmmos = new Dictionary<string, Ammunition>();
+        //    Dictionary<string, List<Weapon>> awaitingAmmos = new Dictionary<string, List<Weapon>>();
+        //    string awaitingName = "";
+        //    (int, int) diceHolder;
+        //    foreach(string line in lines)
+        //    {
+        //        string modifiedLine;
+        //        switch(readMode)
+        //        {
+        //            case 0:
+        //                {
+        //                    if (line.ToLower().Contains("name:"))
+        //                    {
+        //                        modifiedLine = line.Remove(0, 5).Trim();
+        //                        characterSheet.name = modifiedLine;
+        //                    }
+        //                    if (line.ToLower().Contains("race:"))
+        //                    {
+        //                        modifiedLine = line.Remove(0, 5).Trim();
+        //                        characterSheet.race = modifiedLine;
+        //                    }
+        //                    else if (line.ToLower().Contains("class:"))
+        //                    {
+        //                        modifiedLine = line.Remove(0, 6).Trim();
+        //                        characterSheet.characterClass = modifiedLine;
+        //                    }
+        //                    else if (line.ToLower().Contains("level:"))
+        //                    {
+        //                        modifiedLine = line.Remove(0, 6).Trim();
+        //                        characterSheet.characterLevel = int.Parse(modifiedLine);
+        //                    }
+        //                    else if (line.ToLower().Contains("strength:"))
+        //                    {
+        //                        modifiedLine = line.Remove(0, 9).Trim();
+        //                        characterSheet.strength = int.Parse(modifiedLine);
+        //                    }
+        //                    else if (line.ToLower().Contains("dexterity:"))
+        //                    {
+        //                        modifiedLine = line.Remove(0, 10).Trim();
+        //                        characterSheet.dexterity = int.Parse(modifiedLine);
+        //                    }
+        //                    else if (line.ToLower().Contains("constitution:"))
+        //                    {
+        //                        modifiedLine = line.Remove(0, 13).Trim();
+        //                        characterSheet.constitution = int.Parse(modifiedLine);
+        //                    }
+        //                    else if (line.ToLower().Contains("intelligence:"))
+        //                    {
+        //                        modifiedLine = line.Remove(0, 13).Trim();
+        //                        characterSheet.intelligence = int.Parse(modifiedLine);
+        //                    }
+        //                    else if (line.ToLower().Contains("wisdom:"))
+        //                    {
+        //                        modifiedLine = line.Remove(0, 7).Trim();
+        //                        characterSheet.wisdom = int.Parse(modifiedLine);
+        //                    }
+        //                    else if (line.ToLower().Contains("charisma:"))
+        //                    {
+        //                        modifiedLine = line.Remove(0, 9).Trim();
+        //                        characterSheet.charisma = int.Parse(modifiedLine);
+        //                    }
+        //                    else if (line.ToLower().Contains("health:"))
+        //                    {
+        //                        modifiedLine = line.Remove(0, 7).Trim();
+        //                        characterSheet.currentHealth = int.Parse(modifiedLine);
+        //                    }
+        //                    else if (line.ToLower().Contains("max health:"))
+        //                    {
+        //                        modifiedLine = line.Remove(0, 11).Trim();
+        //                        characterSheet.maxHealth = int.Parse(modifiedLine);
+        //                    }
+        //                    else if (line.ToLower().Contains("maximum health:"))
+        //                    {
+        //                        modifiedLine = line.Remove(0, 15).Trim();
+        //                        characterSheet.maxHealth = int.Parse(modifiedLine);
+        //                    }
+        //                    else if (line.ToLower().Contains("temp health:"))
+        //                    {
+        //                        modifiedLine = line.Remove(0, 12).Trim();
+        //                        characterSheet.temporaryHealth = int.Parse(modifiedLine);
+        //                    }
+        //                    else if (line.ToLower().Contains("temporary health:"))
+        //                    {
+        //                        modifiedLine = line.Remove(0, 17).Trim();
+        //                        characterSheet.strength = int.Parse(modifiedLine);
+        //                    }
+        //                    else if (line.ToLower().Contains("hitpoints:"))
+        //                    {
+        //                        modifiedLine = line.Remove(0, 10).Trim();
+        //                        characterSheet.currentHealth = int.Parse(modifiedLine);
+        //                    }
+        //                    else if (line.ToLower().Contains("max hitpoints:"))
+        //                    {
+        //                        modifiedLine = line.Remove(0, 14).Trim();
+        //                        characterSheet.maxHealth = int.Parse(modifiedLine);
+        //                    }
+        //                    else if (line.ToLower().Contains("maximum hitpoints:"))
+        //                    {
+        //                        modifiedLine = line.Remove(0, 19).Trim();
+        //                        characterSheet.maxHealth = int.Parse(modifiedLine);
+        //                    }
+        //                    else if (line.ToLower().Contains("temp hitpoints:"))
+        //                    {
+        //                        modifiedLine = line.Remove(0, 16).Trim();
+        //                        characterSheet.temporaryHealth = int.Parse(modifiedLine);
+        //                    }
+        //                    else if (line.ToLower().Contains("temporary hitpoints:"))
+        //                    {
+        //                        modifiedLine = line.Remove(0, 21).Trim();
+        //                        characterSheet.strength = int.Parse(modifiedLine);
+        //                    }
+        //                    else if (line.ToLower().Contains("details:"))
+        //                    {
+        //                        modifiedLine = line.Remove(0, 8).Trim();
+        //                        characterSheet.details = modifiedLine;
+        //                    }
+        //                    else if (line.ToLower().Contains("abilities:"))
+        //                    {
+        //                        readMode = 1;
+        //                    }
+        //                    else if (line.ToLower().Contains("inventory:"))
+        //                    {
+        //                        readMode = 3;
+        //                    }
+        //                    break;
+        //                }
+        //            case 1:
+        //                {
+        //                    if(line.ToLower().Contains("ability name:"))
+        //                    {
+        //                        creatingAbility = new Ability();
+        //                        creatingAbility.name = line.Remove(0, 13).Trim();
+        //                    }
+        //                    else if(line.ToLower().Contains("type:"))
+        //                    {
+        //                        modifiedLine = line.ToLower().Trim();
+        //                        creatingAbility.healing = modifiedLine.ToLower() == "healing";
+        //                        creatingAbility.damage = modifiedLine.ToLower() == "damaging";
+        //                    }
+        //                    else if(line.ToLower().Contains("dice:"))
+        //                    {
+        //                        readMode = 2;
+        //                    }
+        //                    else if(line.ToLower().Contains("inventory:"))
+        //                    {
+        //                        readMode = 3;
+        //                    }
+        //                    break;
+        //                }
+        //            case 2:
+        //                {
+        //                    if(line.ToLower().Contains("ability name:"))
+        //                    {
+        //                        creatingAbility = new Ability();
+        //                        creatingAbility.name = line.Remove(0, 13).Trim();
+        //                        readMode = 1;
+        //                    }
+        //                    else if(line.ToLower().Contains("inventory:"))
+        //                    {
+        //                        readMode = 3;
+        //                    }
+        //                    else
+        //                    {
+        //                        try
+        //                        {
+        //                            diceHolder = (0, 0);
+        //                            foreach(string s in line.Split('d'))
+        //                            {
+        //                                if(diceHolder.Item1 == 0)
+        //                                {
+        //                                    diceHolder.Item1 = int.Parse(s);
+        //                                }
+        //                                else
+        //                                {
+        //                                    diceHolder.Item2 = int.Parse(s);
+        //                                }
+        //                            }
+        //                            if(creatingAbility.healing)
+        //                            {
+        //                                List<(int, int)> allDiceHolder = new List<(int, int)>(creatingAbility.healingDice);
+        //                                allDiceHolder.Add(diceHolder);
+        //                                creatingAbility.healingDice = allDiceHolder.ToArray();
+        //                            }
+        //                            if(creatingAbility.damage)
+        //                            {
+        //                                List<(int, int)> allDiceHolder = new List<(int, int)>(creatingAbility.healingDice);
+        //                                allDiceHolder.Add(diceHolder);
+        //                                creatingAbility.healingDice = allDiceHolder.ToArray();
+        //                            }
+
+        //                        }
+        //                        catch
+        //                        {
+        //                            readMode = 1;
+        //                        }
+        //                    }
+        //                    break;
+        //                }
+        //            case 3:
+        //                {
+        //                    if (line.ToLower().Contains("item name:"))
+        //                    {
+        //                        if(creatingItem != null)
+        //                        {
+        //                            characterSheet.inventory.Add(creatingItem);
+        //                        }
+        //                        modifiedLine = line.Remove(0, 10).Trim();
+        //                        creatingItem = new Item();
+        //                        creatingItem.name = modifiedLine;
+        //                        awaitingName = "";
+        //                    }
+        //                    else if(line.ToLower().Contains("quantity:"))
+        //                    {
+        //                        modifiedLine = line.Remove(0, 9).Trim();
+        //                        creatingItem.quantity = int.Parse(modifiedLine);
+        //                    }
+        //                    else if(line.ToLower().Contains("description:"))
+        //                    {
+        //                        modifiedLine = line.Remove(0, 12).Trim();
+        //                        creatingItem.description = modifiedLine;
+        //                    }
+        //                    else if(line.ToLower().Contains("ammunition type:"))
+        //                    {
+        //                        readMode = 4;
+        //                        creatingWeapon = new Weapon();
+        //                        creatingWeapon.name = creatingItem.name;
+        //                        creatingWeapon.quantity = creatingItem.quantity;
+        //                        creatingWeapon.description = creatingItem.description;
+        //                        modifiedLine = line.Remove(0, 16).Trim().ToLower();
+        //                        if(createdAmmos.TryGetValue(modifiedLine, out Ammunition ammo))
+        //                        {
+        //                            creatingWeapon.ammoType = ammo;
+        //                            awaitingName = "";
+        //                        }
+        //                        else
+        //                        {
+        //                            awaitingName = modifiedLine;
+        //                            if (awaitingAmmos.TryGetValue(modifiedLine, out List<Weapon> weaponsAlreadyPresent))
+        //                            {
+        //                                weaponsAlreadyPresent.Add(creatingWeapon);
+        //                                awaitingAmmos[modifiedLine] = weaponsAlreadyPresent;
+        //                            }
+        //                            else
+        //                            {
+        //                                awaitingAmmos.Add(modifiedLine, new List<Weapon> { creatingWeapon });
+        //                            }
+        //                        }
+        //                        creatingItem = creatingWeapon;
+        //                    }
+        //                    else if(line.ToLower().Contains("damage type:"))
+        //                    {
+        //                        readMode = 4;
+        //                        creatingWeapon = new Weapon();
+        //                        creatingWeapon.name = creatingItem.name;
+        //                        creatingWeapon.quantity = creatingItem.quantity;
+        //                        creatingWeapon.description = creatingItem.description;
+        //                        modifiedLine = line.Remove(0, 12);
+        //                        creatingWeapon.damageType = modifiedLine;
+        //                        creatingItem = creatingWeapon;
+        //                    }
+        //                    else if(line.ToLower().Contains("dice:"))
+        //                    {
+        //                        readMode = 6;
+        //                        creatingAmmunition = new Ammunition();
+        //                        creatingAmmunition.name = creatingItem.name;
+        //                        creatingAmmunition.quantity = creatingItem.quantity;
+        //                        creatingAmmunition.description = creatingItem.description;
+        //                        if(awaitingAmmos.TryGetValue(creatingAmmunition.name.ToLower(), out List<Weapon> weapons))
+        //                        {
+        //                            foreach(Weapon weapon in weapons)
+        //                            {
+        //                                weapon.ammoType = creatingAmmunition;
+        //                            }
+        //                        }
+        //                        createdAmmos.Add(creatingAmmunition.name.ToLower(), creatingAmmunition);
+        //                        creatingItem = creatingAmmunition;
+        //                    }
+        //                    break;
+        //                }
+        //            case 4:
+        //                {
+        //                    if (line.ToLower().Contains("damage type:"))
+        //                    {
+        //                        modifiedLine = line.Remove(0, 12);
+        //                        creatingWeapon.damageType = modifiedLine;
+        //                    }
+        //                    else if(line.ToLower().Contains("dice:"))
+        //                    {
+        //                        readMode = 5;
+        //                    }
+        //                    break;
+        //                }
+        //            case 5:
+        //                {
+        //                    if (line.ToLower().Contains("minimum damage:"))
+        //                    {
+        //                        readMode = 3;
+        //                        modifiedLine = line.Remove(0, 15);
+        //                        creatingWeapon.minDamage = int.Parse(modifiedLine);
+        //                    }
+        //                    else if(!string.IsNullOrWhiteSpace(line))
+        //                    {
+        //                        try
+        //                        {
+        //                            diceHolder = (0, 0);
+        //                            foreach (string s in line.Split('d'))
+        //                            {
+        //                                if (diceHolder.Item1 == 0)
+        //                                {
+        //                                    diceHolder.Item1 = int.Parse(s);
+        //                                }
+        //                                else
+        //                                {
+        //                                    diceHolder.Item2 = int.Parse(s);
+        //                                }
+        //                            }
+        //                            List<(int, int)> allDiceHolder = new List<(int, int)>(creatingWeapon.damageDice);
+        //                            allDiceHolder.Add(diceHolder);
+        //                            creatingWeapon.damageDice = allDiceHolder.ToArray();
+        //                        }
+        //                        catch
+        //                        {
+
+        //                        }
+        //                    }
+        //                    break;
+        //                }
+        //            case 6:
+        //                {
+        //                    if(line.ToLower().Contains("item name:"))
+        //                    {
+        //                        readMode = 3; 
+        //                        if (creatingItem != null)
+        //                        {
+        //                            characterSheet.inventory.Add(creatingItem);
+        //                        }
+        //                        modifiedLine = line.Remove(0, 10).Trim();
+        //                        creatingItem = new Item();
+        //                        creatingItem.name = modifiedLine;
+        //                        awaitingName = "";
+        //                    }
+        //                    else if(line.ToLower().Contains("minimum damage:"))
+        //                    {
+        //                        modifiedLine = line.Remove(0, 15);
+        //                        creatingAmmunition.minDamage = int.Parse(modifiedLine);
+        //                    }
+        //                    else if(line.ToLower().Contains("damage type:"))
+        //                    {
+        //                        modifiedLine = line.Remove(0, 12);
+        //                        creatingAmmunition.damageType = modifiedLine;
+        //                    }
+        //                    else if(!string.IsNullOrWhiteSpace(line))
+        //                    {
+        //                        diceHolder = (0, 0);
+        //                        foreach (string s in line.Split('d'))
+        //                        {
+        //                            if (diceHolder.Item1 == 0)
+        //                            {
+        //                                diceHolder.Item1 = int.Parse(s);
+        //                            }
+        //                            else
+        //                            {
+        //                                diceHolder.Item2 = int.Parse(s);
+        //                            }
+        //                        }
+        //                        List<(int, int)> allDiceHolder = new List<(int, int)>(creatingAmmunition.dice);
+        //                        allDiceHolder.Add(diceHolder);
+        //                        creatingAmmunition.dice = allDiceHolder.ToArray();
+        //                    }
+        //                    creatingItem = creatingAmmunition;
+        //                    break;
+        //                }
+        //        }
+                
+        //    }
+        //    return characterSheet;
+        //}
 
         public static CharacterSheet FromTemplate(int level)
         {
@@ -556,8 +568,8 @@ namespace AI_DND_Member_Console
                 sb.Append("Include nothing in your response but the name of the ability.");
                 ability.name = Testing.GetResponse(sb.ToString());
                 ability.description = Testing.GetResponse($"You have started crating an ability named {ability.name}. Please come up with a description in it, including nothing in your response except for the description.");
-                ability.healing = bool.Parse(Testing.GetResponse($"You have started creating an ability  named {ability.name} and the description of \"{ability.description}\". Please respond with whether the ability results in a target being healed, limiting your response to \"true\" or \"false\" depending on whether it does or not. Do not include anything else in your response."));
-                ability.damage = bool.Parse(Testing.GetResponse($"You have started creating an ability  named {ability.name} and the description of \"{ability.description}\". Please respond with whether the ability results in a target being damaged, limiting your response to \"true\" or \"false\" depending on whether it does or not. Do not include anything else in your response."));
+                ability.healing = bool.Parse(Testing.GetResponse($"You have started creating an ability named {ability.name} and the description of \"{ability.description}\". Please respond with whether the ability results in a target being healed, limiting your response to \"true\" or \"false\" depending on whether it does or not. Do not include anything else in your response."));
+                ability.damage = bool.Parse(Testing.GetResponse($"You have started creating an ability named {ability.name} and the description of \"{ability.description}\". Please respond with whether the ability results in a target being damaged, limiting your response to \"true\" or \"false\" depending on whether it does or not. Do not include anything else in your response."));
                 
                 if(ability.healing)
                 {
@@ -575,6 +587,7 @@ namespace AI_DND_Member_Console
                             resultingDice.Item2 = int.Parse(s);
                         }
                     }
+                    ability.healingDice = new (int, int)[] { resultingDice };
                 }
                 else if(ability.damage)
                 {
@@ -592,10 +605,79 @@ namespace AI_DND_Member_Console
                             resultingDice.Item2 = int.Parse(s);
                         }
                     }
+                    ability.damageDice = new (int, int)[] { resultingDice };
                 }
                 characterSheet.abilities.Add(ability);
             }
-
+            count = int.Parse(Testing.GetResponse($"You have started creating a DnD character that is a level {level} {characterSheet.race} {characterSheet.characterClass} named {characterSheet.name} and the stats of Strength {characterSheet.strength}, Dexterity {characterSheet.dexterity}, Constitution {characterSheet.constitution}, Intelligence {characterSheet.intelligence}, Wisdom {characterSheet.wisdom}, Charisma {characterSheet.charisma}, and the max health of {characterSheet.maxHealth}, with the character details of \"{characterSheet.details}\". Please respond with how many unique items the character should have, including nothing in your response except for the number of abilities."));
+            for(int i = 0; i < count; i++)
+            {
+                Item item = new Item();
+                StringBuilder sb = new StringBuilder($"You have started creating a DnD character that is a level {level} {characterSheet.race} {characterSheet.characterClass} named {characterSheet.name}. Please come up with a new item in their inventory");
+                if (characterSheet.inventory.Count > 0)
+                {
+                    sb.Append(" that is not ");
+                    for (int j = 0; j < characterSheet.inventory.Count - 1; j++)
+                    {
+                        sb.Append($"{characterSheet.inventory[j].name}, ");
+                    }
+                    if (characterSheet.inventory.Count == 1)
+                    {
+                        sb.Append($"{characterSheet.inventory[0].name}.");
+                    }
+                    else
+                    {
+                        sb.Append($"or {characterSheet.inventory[characterSheet.inventory.Count - 1].name}.");
+                    }
+                }
+                else
+                {
+                    sb.Append(".");
+                }
+                sb.Append("Include nothing in your response but the name of the item.");
+                item.name = Testing.GetResponse(sb.ToString());
+                item.description = Testing.GetResponse($"Please respond with a description of the item {item.name}. Include nothing but the description of the item in the response.");
+                if (bool.Parse(Testing.GetResponse($"Would the item {item.name} with the description \"{item.description}\" be considered a form of ammunition? Include nothing in your response besides \"true\" or \"false\" depending on whether it would be.")))
+                {
+                    Ammunition ammo = new Ammunition();
+                    ammo.name = item.name;
+                    ammo.description = item.description;
+                    ammo.damageType = Testing.GetResponse($"What type of damage would the weapon {ammo.name} with the description \"{ammo.description}\" deal? respond with nothing but the damage type.");
+                    ammo.quantity = int.Parse(Testing.GetResponse($"How many instances of the item {item.name} would a level {characterSheet.characterLevel} {characterSheet.race} {characterSheet.characterClass} named {characterSheet.name} have? Respond with nothing but the number represnting the quantity of the item."));
+                    characterSheet.inventory.Add(ammo);
+                }
+                else if(bool.Parse(Testing.GetResponse($"Would the item {item.name} with the description \"{item.description}\" be considered a weapon? Include nothing in your response besides \"true\" or \"false\" depending on whether it would be.")))
+                {
+                    Weapon weapon = new Weapon();
+                    weapon.name = item.name;
+                    weapon.description = item.description;
+                    weapon.ammoType = Testing.GetResponse($"Would the weapon {weapon.name} fire some sort of ammunition? If so respond with only the name of the type of ammunition it would fire. If not, do not respond at all.");
+                    string result = Testing.GetResponse($"You have started creating a new character with the weapon {weapon.name} and the description of \"{weapon.description}\". Please respond with the number and type of dice used for determining the healing that this weapon does, in the format \"(number of dice)d(size of dice)\". Include nothing in your response but this value.");
+                    string[] results = result.Split('d');
+                    (int, int) resultingDice = (0, 0);
+                    foreach (string s in results)
+                    {
+                        if (resultingDice.Item1 == 0)
+                        {
+                            resultingDice.Item1 = int.Parse(s);
+                        }
+                        else
+                        {
+                            resultingDice.Item2 = int.Parse(s);
+                        }
+                    }
+                    weapon.damageDice = new (int, int)[] { resultingDice };
+                    weapon.quantity = 1;
+                    weapon.damageType = Testing.GetResponse($"What type of damage would the weapon {weapon.name} with the description \"{weapon.description}\" deal? respond with nothing but the damage type.");
+                    characterSheet.inventory.Add(weapon);
+                }
+                else
+                {
+                    item.quantity = int.Parse(Testing.GetResponse($"How many instances of the item {item.name} would a level {characterSheet.characterLevel} {characterSheet.race} {characterSheet.characterClass} named {characterSheet.name} have? Respond with nothing but the number represnting the quantity of the item."));
+                    characterSheet.inventory.Add(item);
+                }
+            }
+            return characterSheet;
         }
     }
 }

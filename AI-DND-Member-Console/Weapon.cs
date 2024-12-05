@@ -8,10 +8,11 @@ namespace AI_DND_Member_Console
 {
     public class Weapon : Item
     {
-        public Ammunition ammoType = null;
+        public string ammoType = "";
         public string damageType;
         public int minDamage = 0;
         public (int, int)[] damageDice;
+        public CharacterSheet owner;
 
         public int rollDamage()
         {
@@ -31,23 +32,27 @@ namespace AI_DND_Member_Console
             damage += minDamage;
 
             //If you do not fire ammunition, return the damage
-            if (ammoType == null)
+            if (ammoType == "")
             {
                 return damage;
             }
             //If you do, deal with it
-            else if(ammoType.quantity > 0)
+            else if (owner.GetAmmunition(ammoType) != null)
             {
-                //Go through all of the damage dice of the ammunition
-                foreach((int, int) set in ammoType.dice)
+                Ammunition ammo = owner.GetAmmunition(ammoType);
+                if (ammo.quantity > 0)
                 {
-                    for(int i = 0; i < set.Item1; i++)
+                    //Go through all of the damage dice of the ammunition
+                    foreach ((int, int) set in ammo.dice)
                     {
-                        damage += rand.Next(set.Item2) + 1;
+                        for (int i = 0; i < set.Item1; i++)
+                        {
+                            damage += rand.Next(set.Item2) + 1;
+                        }
                     }
+                    //apply the minimum damage of the ammo
+                    return damage + ammo.minDamage;
                 }
-                //apply the minimum damage of the ammo
-                return damage + ammoType.minDamage;
             }
             //If you are out of ammo you cannot use the weapon
             return 0;
@@ -58,7 +63,7 @@ namespace AI_DND_Member_Console
         {
             StringBuilder sb = new StringBuilder(base.ToString());
             //Add ammo type if relevant
-            if(ammoType != null)
+            if(ammoType != "")
             {
                 sb.AppendLine($"\nAmmunition Type: {ammoType}");
             }
