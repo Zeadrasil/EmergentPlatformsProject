@@ -100,14 +100,18 @@ namespace AI_DND_Member_Console
 
 		static void RunAsDM()
 		{
-            //messagesToSave.AddFirst(SystemPromptAIPlayer);
-            memoryBuilder.AppendLine(SystemPromptAIPlayer);
-            string? answer = null;
-            Console.Write("Give a background as to the story and universe of this campaign, then set the scene for the player.\n");
-            Console.Write('\n');
-            Console.Write("\n>>> ");
-            answer = Console.ReadLine();
-            Console.Write('\n');
+			//messagesToSave.AddFirst(SystemPromptAIPlayer);
+			string? answer = null;
+            bool skipFirstPrompt = saveFile != null;
+            if (saveFile == null)
+			{
+				memoryBuilder.AppendLine(SystemPromptAIPlayer);
+				Console.Write("Give a background as to the story and universe of this campaign, then set the scene for the player.\n");
+				Console.Write('\n');
+				Console.Write("\n>>> ");
+				answer = Console.ReadLine();
+				Console.Write('\n');
+			}
             do
 			{
 				if(answer != null)
@@ -116,10 +120,15 @@ namespace AI_DND_Member_Console
 					memoryBuilder.AppendLine(answer);
 				}
 
-				foreach(var stream in Testing.client.GenerateAsync((answer == null) ? SystemPromptAIPlayer : memoryBuilder.ToString()).ToBlockingEnumerable()) {
-					Console.Write(stream.Response);
-					messagesBuilder.Append(stream.Response);
+				if(!skipFirstPrompt)
+				{
+					foreach (var stream in Testing.client.GenerateAsync((answer == null) ? SystemPromptAIPlayer : memoryBuilder.ToString()).ToBlockingEnumerable())
+					{
+						Console.Write(stream.Response);
+						messagesBuilder.Append(stream.Response);
+					}
 				}
+				skipFirstPrompt = false;
 
 				messagesToSave.AddLast(messagesBuilder.ToString());
 				memoryBuilder.AppendLine(messagesBuilder.ToString());
