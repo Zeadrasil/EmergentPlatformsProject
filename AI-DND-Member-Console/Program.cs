@@ -112,7 +112,7 @@ namespace AI_DND_Member_Console
 			{
 				if(answer != null)
 				{
-					//messagesToSave.AddLast(answer);
+					messagesToSave.AddLast(answer);
 					memoryBuilder.AppendLine(answer);
 				}
 
@@ -121,7 +121,7 @@ namespace AI_DND_Member_Console
 					messagesBuilder.Append(stream.Response);
 				}
 
-				//messagesToSave.AddLast(messagesBuilder.ToString());
+				messagesToSave.AddLast(messagesBuilder.ToString());
 				memoryBuilder.AppendLine(messagesBuilder.ToString());
 				messagesBuilder.Clear();
 
@@ -157,6 +157,51 @@ namespace AI_DND_Member_Console
 				*/
 			}
 			while (!Testing.ProcessTrueFalseQuestion("Would you like to exit the application?", answer) && !Testing.ProcessTrueFalseQuestion("What would you like to do next?", "they would like to exit the application", answer));
+
+			StringBuilder textToSummarize = new StringBuilder();
+			foreach(string message in messagesToSave) {
+				textToSummarize.AppendLine(message);
+			}
+
+			StringBuilder summaryBuilder = new StringBuilder();
+			foreach(var stream in Testing.client.GenerateAsync($"Summarize the following string: {textToSummarize}").ToBlockingEnumerable()) {
+				summaryBuilder.Append(stream.Response);
+			}
+
+			if(saveFile == null) {
+				saveFile = new SaveData();
+				saveFile.summarizedData.Add(summaryBuilder.ToString());
+				saveFile.rawData = memoryBuilder.ToString();
+				saveFile.isDM = true;
+
+				JsonSerializerOptions options = new JsonSerializerOptions();
+				options.WriteIndented = true;
+
+				string json = JsonSerializer.Serialize(saveFile, options);
+
+				Console.WriteLine("What would you like to name this save file?");
+				string? input = null;
+				while(input == null) {
+					input = Console.ReadLine();
+
+					// Ensure the file name is valid
+					if(input != null && input.IndexOfAny(Path.GetInvalidPathChars()) >= 0) {
+						input = null;
+					}
+				}
+
+				File.WriteAllText($"{SAVE_FILE_LOCATION}/{input}.json", json);
+			} else {
+				saveFile.summarizedData.Add(summaryBuilder.ToString());
+				saveFile.rawData = memoryBuilder.ToString();
+
+				JsonSerializerOptions options = new JsonSerializerOptions();
+				options.WriteIndented = true;
+
+				string json = JsonSerializer.Serialize(saveFile, options);
+
+				File.WriteAllText($"{SAVE_FILE_LOCATION}/{saveFileName}.json", json);
+			}
 		}
 
 		static void RunAsPlayer()
@@ -211,6 +256,7 @@ namespace AI_DND_Member_Console
 				saveFile = new SaveData();
 				saveFile.summarizedData.Add(summaryBuilder.ToString());
 				saveFile.rawData = memoryBuilder.ToString();
+				saveFile.isDM = false;
 
 				JsonSerializerOptions options = new JsonSerializerOptions();
 				options.WriteIndented = true;
