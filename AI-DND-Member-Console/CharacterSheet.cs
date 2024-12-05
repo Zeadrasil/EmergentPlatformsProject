@@ -511,5 +511,89 @@ namespace AI_DND_Member_Console
             }
             return characterSheet;
         }
+
+        public static CharacterSheet FromTemplate(int level)
+        {
+            CharacterSheet characterSheet = new CharacterSheet();
+            characterSheet.name = Testing.GetResponse("Please start creating a new character. The first thing that will be needed is a name. Do not include anything in your response but the name of the new character.");
+            characterSheet.race = Testing.GetResponse($"You have started creating a DnD character named {characterSheet.name}. Please respond with the race that this character will be. Do not include anything in your response but the name of the race of the new character.");
+            characterSheet.characterClass = Testing.GetResponse($"You have started creating a DnD character that is a {characterSheet.race} named {characterSheet.name}. Please respond with what class they are. Do not include anything in your response but the name of the new character's class.");
+            characterSheet.characterLevel = level;
+            characterSheet.strength = int.Parse(Testing.GetResponse($"You have started creating a DnD character that is a level {level} {characterSheet.race} {characterSheet.characterClass} named {characterSheet.name}. Please respond with the strength value of the player, including nothing but the number of the stat in your response"));
+            characterSheet.dexterity = int.Parse(Testing.GetResponse($"You have started creating a DnD character that is a level {level} {characterSheet.race} {characterSheet.characterClass} named {characterSheet.name}. Please respond with the dexterity value of the player, including nothing but the number of the stat in your response"));
+            characterSheet.constitution = int.Parse(Testing.GetResponse($"You have started creating a DnD character that is a level {level} {characterSheet.race} {characterSheet.characterClass} named {characterSheet.name}. Please respond with the constitution value of the player, including nothing but the number of the stat in your response"));
+            characterSheet.intelligence = int.Parse(Testing.GetResponse($"You have started creating a DnD character that is a level {level} {characterSheet.race} {characterSheet.characterClass} named {characterSheet.name}. Please respond with the intelligence value of the player, including nothing but the number of the stat in your response"));
+            characterSheet.wisdom = int.Parse(Testing.GetResponse($"You have started creating a DnD character that is a level {level} {characterSheet.race} {characterSheet.characterClass} named {characterSheet.name}. Please respond with the wisdom value of the player, including nothing but the number of the stat in your response"));
+            characterSheet.charisma = int.Parse(Testing.GetResponse($"You have started creating a DnD character that is a level {level} {characterSheet.race} {characterSheet.characterClass} named {characterSheet.name}. Please respond with the charisma value of the player, including nothing but the number of the stat in your response"));
+            characterSheet.maxHealth = int.Parse(Testing.GetResponse($"You have started creating a DnD character that is a level {level} {characterSheet.race} {characterSheet.characterClass} named {characterSheet.name} and the stats of Strength {characterSheet.strength}, Dexterity {characterSheet.dexterity}, Constitution {characterSheet.constitution}, Intelligence {characterSheet.intelligence}, Wisdom {characterSheet.wisdom}, Charisma {characterSheet.charisma}"));
+            characterSheet.details = Testing.GetResponse($"You have started creating a DnD character that is a level {level} {characterSheet.race} {characterSheet.characterClass} named {characterSheet.name} and the stats of Strength {characterSheet.strength}, Dexterity {characterSheet.dexterity}, Constitution {characterSheet.constitution}, Intelligence {characterSheet.intelligence}, Wisdom {characterSheet.wisdom}, Charisma {characterSheet.charisma}, and the max health of {characterSheet.maxHealth}. Please respond with the description of the character, including nothing in your response except for the character description.");
+            characterSheet.currentHealth = characterSheet.maxHealth;
+            int count = int.Parse(Testing.GetResponse($"You have started creating a DnD character that is a level {level} {characterSheet.race} {characterSheet.characterClass} named {characterSheet.name} and the stats of Strength {characterSheet.strength}, Dexterity {characterSheet.dexterity}, Constitution {characterSheet.constitution}, Intelligence {characterSheet.intelligence}, Wisdom {characterSheet.wisdom}, Charisma {characterSheet.charisma}, and the max health of {characterSheet.maxHealth}, with the character details of \"{characterSheet.details}\". Please respond with how many abilities the character should have, including nothing in your response except for the number of abilities."));
+            for(int i = 0; i < count; i++)
+            {
+                Ability ability = new Ability();
+                StringBuilder sb = new StringBuilder($"You have started creating a DnD character that is a level {level} {characterSheet.race} {characterSheet.characterClass} named {characterSheet.name}. Please come up with a new ability");
+                if (characterSheet.abilities.Count > 0)
+                {
+                    sb.Append(" that is not ");
+                    for (int j = 0; j < characterSheet.abilities.Count - 1; j++)
+                    {
+                        sb.Append($"{characterSheet.abilities[j].name}, ");
+                    }
+                    if (characterSheet.abilities.Count == 1)
+                    {
+                        sb.Append($"{characterSheet.abilities[0].name}.");
+                    }
+                    else
+                    {
+                        sb.Append($"or {characterSheet.abilities[characterSheet.abilities.Count - 1].name}.");
+                    }
+                }
+                else
+                {
+                    sb.Append(".");
+                }
+                sb.Append("Include nothing in your response but the name of the ability.");
+                ability.name = Testing.GetResponse(sb.ToString());
+                ability.description = Testing.GetResponse($"You have started crating an ability named {ability.name}. Please come up with a description in it, including nothing in your response except for the description.");
+                ability.healing = bool.Parse(Testing.GetResponse($"You have started creating an ability  named {ability.name} and the description of \"{ability.description}\". Please respond with whether the ability results in a target being healed, limiting your response to \"true\" or \"false\" depending on whether it does or not. Do not include anything else in your response."));
+                ability.damage = bool.Parse(Testing.GetResponse($"You have started creating an ability  named {ability.name} and the description of \"{ability.description}\". Please respond with whether the ability results in a target being damaged, limiting your response to \"true\" or \"false\" depending on whether it does or not. Do not include anything else in your response."));
+                
+                if(ability.healing)
+                {
+                    string result = Testing.GetResponse($"You have started creating a new character with the ability {ability.name} and the description of \"{ability.description}\". Please respond with the number and type of dice used for determining the healing that this ability does, in the format \"(number of dice)d(size of dice)\". Include nothing in your response but this value.");
+                    string[] results = result.Split('d');
+                    (int, int) resultingDice = (0, 0);
+                    foreach(string s in results)
+                    {
+                        if(resultingDice.Item1 == 0)
+                        {
+                            resultingDice.Item1 = int.Parse(s);
+                        }
+                        else
+                        {
+                            resultingDice.Item2 = int.Parse(s);
+                        }
+                    }
+                }
+                else if(ability.damage)
+                {
+                    string result = Testing.GetResponse($"You have started creating a new character with the ability {ability.name} and the description of \"{ability.description}\". Please respond with the number and type of dice used for determining the healing that this ability does, in the format \"(number of dice)d(size of dice)\". Include nothing in your response but this value.");
+                    string[] results = result.Split('d');
+                    (int, int) resultingDice = (0, 0);
+                    foreach (string s in results)
+                    {
+                        if (resultingDice.Item1 == 0)
+                        {
+                            resultingDice.Item1 = int.Parse(s);
+                        }
+                        else
+                        {
+                            resultingDice.Item2 = int.Parse(s);
+                        }
+                    }
+                }
+            }
+        }
     }
 }

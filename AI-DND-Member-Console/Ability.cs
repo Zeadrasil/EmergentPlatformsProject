@@ -10,6 +10,7 @@ namespace AI_DND_Member_Console
     public class Ability
     {
         public string name;
+        public string description;
         public bool healing;
         public bool damage;
 
@@ -64,9 +65,12 @@ namespace AI_DND_Member_Console
             return 0;
         }
 
+        //Turn into a string for interacting with AI
        public string ToString()
         {
-            StringBuilder sb = new StringBuilder($"Ability Name: {name}\n");
+            StringBuilder sb = new StringBuilder($"Ability Name: {name}\nDescription: {description}\n");
+
+            //If it is a healing ability, say so and also list all of the dice used to determine how much
             if (healing)
             {
                 sb.AppendLine("Type: Healing\nDice:\n");
@@ -75,6 +79,7 @@ namespace AI_DND_Member_Console
                     sb.AppendLine($"{set.Item1}d{set.Item2}");
                 }
             }
+            //If it is a healing ability, say so and also list all of the dice used to determin how much
             else if (damage)
             {
                 sb.AppendLine("Type: Damaging\nDice:\n");
