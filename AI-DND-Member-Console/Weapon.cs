@@ -15,26 +15,47 @@ namespace AI_DND_Member_Console
 
         public int rollDamage()
         {
-            if(ammoType == null)
+            Random rand = new Random();
+            int damage = 0;
+            foreach ((int, int) set in damageDice)
             {
-                Random rand = new Random();
-                int damage = 0;
-                foreach((int, int) set in damageDice)
+                for (int i = 0; i < set.Item1; i++)
+                {
+                    damage += rand.Next(set.Item2) + 1;
+                }
+            }
+            damage += minDamage;
+            if (ammoType == null)
+            {
+                return damage;
+            }
+            else if(ammoType.quantity > 0)
+            {
+                foreach((int, int) set in ammoType.dice)
                 {
                     for(int i = 0; i < set.Item1; i++)
                     {
-                        damage += rand.Next(set.Item2) + 1 + minDamage;
+                        damage += rand.Next(set.Item2) + 1;
                     }
                 }
-                return damage;
+                return damage + ammoType.minDamage;
             }
-            return -1;
+            return 0;
         }
 
         public override string ToString()
         {
             StringBuilder sb = new StringBuilder(base.ToString());
-            sb.AppendLine($"\nDamage Type: {damageType}\nDice:");
+            if(ammoType != null)
+            {
+                sb.AppendLine($"\nAmmunition Type: {ammoType}");
+            }
+            else
+            {
+                sb.AppendLine("Ammunition Type: None");
+            }
+            sb.AppendLine($"Damage Type: {damageType}");
+            sb.AppendLine("Dice:");
             foreach ((int, int) set in damageDice)
             {
                 sb.AppendLine($"{set.Item1}d{set.Item2}");

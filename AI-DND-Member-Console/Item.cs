@@ -9,10 +9,11 @@ namespace AI_DND_Member_Console
     public class Item
     {
         public string name;
-
+        public int quantity;
+        public string description;
         public override string ToString()
         {
-            return $"Name: {name}";
+            return $"Item Name: {name}\nQuantity: {quantity}\nDescription: {description}";
         }
     }
 }
